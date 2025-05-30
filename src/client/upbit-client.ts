@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { upbitConfig } from "../config/upbit-config";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
