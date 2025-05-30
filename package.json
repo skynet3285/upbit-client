@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
@@ -19,7 +19,14 @@
     "node": "^22.16.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.27.3",
+    "@babel/plugin-transform-runtime": "^7.27.3",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-typescript": "^7.27.1",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.15.26",
+    "babel-jest": "30.0.0-beta.3",
+    "jest": "^29.7.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
