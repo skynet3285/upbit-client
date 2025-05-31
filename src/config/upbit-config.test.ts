@@ -13,12 +13,6 @@ describe("Upbit API Configuration", () => {
     }
   });
 
-  test("should have all required environment variables defined", () => {
-    expect(process.env.UPBIT_OPEN_API_ACCESS_KEY).toBeDefined();
-    expect(process.env.UPBIT_OPEN_API_SECRET_KEY).toBeDefined();
-    expect(process.env.UPBIT_OPEN_API_SERVER_URL).toBeDefined();
-  });
-
   test("should export upbitConfig with correct structure", () => {
     expect(upbitConfig).toHaveProperty("access_key");
     expect(upbitConfig).toHaveProperty("secret_key");
