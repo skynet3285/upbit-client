@@ -1,7 +1,9 @@
-import { upbitClient } from "../client/upbit-client";
+import { UpbitClient } from "../client/UpbitClient";
 import type { UpbitMarket } from "../types/upbit-market.type";
 
 export class UpbitMarketRepository {
+  constructor(private client: UpbitClient) {}
+
   private basepath = "market";
 
   /** 2025.05.30. v1.5.7
@@ -14,8 +16,6 @@ export class UpbitMarketRepository {
    */
   async listAll(isDetails: boolean = false): Promise<UpbitMarket[]> {
     const path = `${this.basepath}/all`;
-    return upbitClient.call(path, "GET", { isDetails });
+    return this.client.call(path, "GET", { isDetails });
   }
 }
-
-export const upbitMarketRepository = new UpbitMarketRepository();

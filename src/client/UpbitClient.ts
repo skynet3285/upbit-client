@@ -1,14 +1,17 @@
-import { upbitConfig } from "../config/upbit-config";
+// import { upbitConfig } from "../config/upbit-config";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import type { UpbitConfig } from "../config/upbit-config";
 
-class UpbitClient {
-  private baseUrl = upbitConfig.server_url;
+export class UpbitClient {
+  constructor(private upbitConfig: UpbitConfig) {}
+
+  private baseUrl = this.upbitConfig.server_url;
 
   private genToken(queryParams: Record<string, any>): string {
     const payload: Record<string, any> = {
-      access_key: upbitConfig.access_key,
+      access_key: this.upbitConfig.access_key,
       nonce: uuidv4(),
     };
 
@@ -31,7 +34,7 @@ class UpbitClient {
       payload.query_hash_alg = "SHA512";
     }
 
-    return jwt.sign(payload, upbitConfig.secret_key);
+    return jwt.sign(payload, this.upbitConfig.secret_key);
   }
 
   async call(
@@ -71,5 +74,3 @@ class UpbitClient {
     return await response.json();
   }
 }
-
-export const upbitClient = new UpbitClient();

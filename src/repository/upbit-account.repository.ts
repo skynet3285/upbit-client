@@ -1,7 +1,9 @@
-import { upbitClient } from "../client/upbit-client";
+import { UpbitClient } from "../client/UpbitClient";
 import type { UpbitAccount } from "../types/upbit-account.type";
 
 export class UpbitAccountRepository {
+  constructor(private client: UpbitClient) {}
+
   private basePath = "accounts";
 
   /** 2025.05.30. v1.5.7
@@ -13,8 +15,6 @@ export class UpbitAccountRepository {
    */
   async listAll(): Promise<UpbitAccount[]> {
     const path = `${this.basePath}`;
-    return upbitClient.call(path, "GET");
+    return this.client.call(path, "GET");
   }
 }
-
-export const upbitAccountRepository = new UpbitAccountRepository();
