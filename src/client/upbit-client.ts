@@ -1,19 +1,10 @@
-import axios, { AxiosInstance } from "axios";
 import { upbitConfig } from "../config/upbit-config";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 class UpbitClient {
-  private axiosInstance: AxiosInstance;
-  constructor() {
-    this.axiosInstance = axios.create({
-      baseURL: upbitConfig.server_url,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    });
-  }
+  private baseUrl = upbitConfig.server_url;
 
   private genToken(queryParams: Record<string, any>): string {
     const payload: Record<string, any> = {
@@ -43,7 +34,6 @@ class UpbitClient {
     return jwt.sign(payload, upbitConfig.secret_key);
   }
 
-  // 2025.05.30. Reference: https://docs.upbit.com/kr/docs/create-authorization-request
   async call(
     path: string,
     method: "GET" | "POST" | "DELETE" | "PUT",
@@ -51,16 +41,34 @@ class UpbitClient {
   ) {
     const token = this.genToken(queryParams);
 
-    const response = await this.axiosInstance.request({
-      url: path,
+    const url = new URL(path, this.baseUrl);
+    if (Object.keys(queryParams).length > 0) {
+      Object.entries(queryParams).forEach(([key, value]) =>
+        url.searchParams.append(key, String(value))
+      );
+    }
+
+    const response = await fetch(url.href, {
       method,
       headers: {
+        "Content-Type": "application/json; charset=utf-8",
         Authorization: `Bearer ${token}`,
       },
-      params: queryParams,
     });
 
-    return response.data;
+    if (!response.ok) {
+      const error = new Error();
+
+      error.name = "UpbitApiError";
+      error.message = `Upbit API call failed: ${
+        response.statusText
+      } ${response.text()}`;
+      error.stack = `Status ${response.status}, URL ${url.href}`;
+
+      throw error;
+    }
+
+    return await response.json();
   }
 }
 
