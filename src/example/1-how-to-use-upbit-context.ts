@@ -11,13 +11,33 @@ async function main() {
 
     const {
       accountRepository,
+      candleRepository,
       marketRepository,
       tickerRepository,
     }: UpbitContext = createUpbitContext(upbitConfig);
 
     const accounts = await accountRepository.listAll();
-    console.log(`✅ : ${accounts.length}`);
+    console.log(`✅ Accounts : ${accounts.length}`);
     console.log(accounts.slice(0, 5));
+
+    for (const account of accounts) {
+      if (account.currency === "KRW") continue;
+
+      console.log(`🔍 Fetching data for account: ${account.currency}`);
+      const currencies = account.unit_currency + "-" + account.currency;
+      const candleDays = await candleRepository.listDays(currencies, null, 2);
+      console.log(`✅ Candle Days : ${candleDays.length}`);
+      console.log(candleDays.slice(0, 5));
+
+      const candleMonths = await candleRepository.listMonths(
+        currencies,
+        null,
+        2
+      );
+      console.log(`✅ Candle Months : ${candleMonths.length}`);
+      console.log(candleMonths.slice(0, 5));
+      console.log("--------------------------------");
+    }
   } catch (err) {
     console.error("❌ Failed to fetch :", err);
   }
